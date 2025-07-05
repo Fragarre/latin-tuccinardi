@@ -100,4 +100,4 @@ numpy
 
 ---
 
-Desarrollado con ❤️ para proyectos de análisis estilométrico y humanidades digitales.
+
