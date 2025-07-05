@@ -1,0 +1,7 @@
+pandas
+scipy
+matplotlib
+scikit-learn
+streamlit
+umap
+umap-learn
