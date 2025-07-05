@@ -36,7 +36,9 @@ st.sidebar.header("Carga de archivos")
 zip_conocidos = st.sidebar.file_uploader("Textos conocidos (.zip)", type="zip")
 txt_dudoso = st.sidebar.file_uploader("Texto dudoso (.txt)", type="txt")
 
-if st.sidebar.button("Ejecutar análisis"):
+ejecutar = st.sidebar.button("Ejecutar análisis", disabled=not (zip_conocidos and txt_dudoso))
+
+if ejecutar:
 
     with st.spinner("Procesando análisis..."):
 

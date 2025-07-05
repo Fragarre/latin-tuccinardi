@@ -55,7 +55,11 @@ def calcular_similitud(vec1, vec2, metodo="cosine"):
 def ejecutar_analisis(n=4, s=1000, metodo="cosine", margen=0.05):
     os.makedirs(TABLAS_DIR, exist_ok=True)
 
-    path_unknown = glob.glob(os.path.join(DATA_DIR, "texto_dudoso", "*.txt"))[0]
+    unknown_files = glob.glob(os.path.join(DATA_DIR, "texto_dudoso", "*.txt"))
+    if not unknown_files:
+        raise FileNotFoundError("No se encontró el archivo dudoso en 'data/texto_dudoso/'. Asegúrate de haber subido un archivo .txt.")
+    path_unknown = unknown_files[0]
+
     unknown_text = leer_texto(path_unknown)
     tam_unknown = len(unknown_text)
     _, freq_unknown_rel = perfil_ngramas(unknown_text, n, s=s)
