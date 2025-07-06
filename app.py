@@ -6,16 +6,13 @@ import zipfile
 from analisis_spi import ejecutar_analisis
 
 st.set_page_config(page_title="Análisis de Autoría SPI", layout="wide")
-st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 0.1")
-
+st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 0.2")
 
 # ------------------- SIDEBAR -------------------
 st.sidebar.header("Parámetros")
 
-# Selección de n-grama
 n = st.sidebar.selectbox("Tamaño de n-grama (n)", [3, 4, 5, 6], index=1)
 
-# Entrada manual para tamaño del perfil (s)
 s_input = st.sidebar.text_input("Tamaño del perfil (s) — vacío para no truncar", value="1000")
 try:
     s = int(s_input.strip()) if s_input.strip() else None
@@ -26,12 +23,6 @@ except ValueError:
 metodo = st.sidebar.selectbox("Métrica de similitud", ["cosine", "euclidean"], index=0)
 margen = st.sidebar.slider("Margen de tolerancia (%)", min_value=1, max_value=20, value=5) / 100
 
-try:
-    s = int(s_input) if s_input.strip() else None
-except ValueError:
-    st.sidebar.error("El tamaño del perfil debe ser un número o estar vacío.")
-    st.stop()
-
 # ------------------- CARGA DE ARCHIVOS -------------------
 st.sidebar.header("Carga de archivos")
 zip_conocidos = st.sidebar.file_uploader("Textos conocidos (.zip)", type="zip")
@@ -40,40 +31,53 @@ txt_dudoso = st.sidebar.file_uploader("Texto dudoso (.txt)", type="txt")
 ejecutar = st.sidebar.button("Ejecutar análisis", disabled=not (zip_conocidos and txt_dudoso))
 
 if ejecutar:
-
     with st.spinner("Procesando análisis..."):
 
-        # Preparar directorios
-        base_dir = os.getcwd()
-        data_dir = os.path.join(base_dir, "data")
-        conocidos_dir = os.path.join(data_dir, "textos_ciertos")
-        dudoso_dir = os.path.join(data_dir, "texto_dudoso")
+        # Directorio base relativo al archivo actual (más seguro en cloud)
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        DATA_DIR = os.path.join(BASE_DIR, "data")
+        CONOCIDOS_DIR = os.path.join(DATA_DIR, "textos_ciertos")
+        DUDOSO_DIR = os.path.join(DATA_DIR, "texto_dudoso")
 
-        shutil.rmtree(conocidos_dir, ignore_errors=True)
-        shutil.rmtree(dudoso_dir, ignore_errors=True)
-        os.makedirs(conocidos_dir, exist_ok=True)
-        os.makedirs(dudoso_dir, exist_ok=True)
+        # Limpiar directorios
+        shutil.rmtree(CONOCIDOS_DIR, ignore_errors=True)
+        shutil.rmtree(DUDOSO_DIR, ignore_errors=True)
+        os.makedirs(CONOCIDOS_DIR, exist_ok=True)
+        os.makedirs(DUDOSO_DIR, exist_ok=True)
 
         # Guardar y descomprimir ZIP
-        if zip_conocidos:
-            zip_path = os.path.join(conocidos_dir, "temp.zip")
+        try:
+            zip_path = os.path.join(CONOCIDOS_DIR, "temp.zip")
             with open(zip_path, "wb") as f:
                 f.write(zip_conocidos.read())
             with zipfile.ZipFile(zip_path, "r") as zip_ref:
-                zip_ref.extractall(conocidos_dir)
+                zip_ref.extractall(CONOCIDOS_DIR)
             os.remove(zip_path)
+        except Exception as e:
+            st.error(f"Error al descomprimir el ZIP: {e}")
+            st.stop()
 
-        # Guardar TXT y renombrar como dudoso.txt
-        if txt_dudoso:
-            with open(os.path.join(dudoso_dir, "dudoso.txt"), "wb") as f:
+        # Guardar el TXT dudoso
+        try:
+            dudoso_path = os.path.join(DUDOSO_DIR, "dudoso.txt")
+            with open(dudoso_path, "wb") as f:
                 f.write(txt_dudoso.read())
+        except Exception as e:
+            st.error(f"No se pudo guardar el archivo dudoso: {e}")
+            st.stop()
 
         # Ejecutar análisis
-        resumen_md, fig_box, fig_bar = ejecutar_analisis(n=n, s=s, metodo=metodo, margen=margen)
+        try:
+            resumen_md, fig_box, fig_bar = ejecutar_analisis(n=n, s=s, metodo=metodo, margen=margen)
+        except FileNotFoundError as fnfe:
+            st.error(f"Error de archivo: {fnfe}")
+            st.stop()
+        except Exception as e:
+            st.error(f"Error durante el análisis: {e}")
+            st.stop()
 
         # Mostrar resultados
         st.markdown(resumen_md)
-
         st.subheader("Distribución de similitudes")
         st.pyplot(fig_box)
 
