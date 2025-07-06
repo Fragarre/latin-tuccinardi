@@ -12,9 +12,23 @@ import numpy as np
 
 # --------------------------- CONFIGURACIÓN ---------------------------
 
-PARENT_DIR = "C:/Users/fraga/projects/stamatatos"
-DATA_DIR = os.path.join(PARENT_DIR, "data")
-TABLAS_DIR = os.path.join(PARENT_DIR, "resultados", "tablas")
+# Ruta base absoluta al directorio donde está este script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Subcarpetas principales
+DATA_DIR = os.path.join(BASE_DIR, "data")
+TABLAS_DIR = os.path.join(BASE_DIR, "resultados", "tablas")
+FIGURAS_DIR = os.path.join(BASE_DIR, "resultados", "figuras")
+
+# Crear directorios de salida si no existen
+os.makedirs(TABLAS_DIR, exist_ok=True)
+os.makedirs(FIGURAS_DIR, exist_ok=True)
+
+# Ruta del archivo dudoso
+path_unknown = os.path.join(DATA_DIR, "texto_dudoso", "dudoso.txt")
+if not os.path.exists(path_unknown):
+    raise FileNotFoundError(f"No se encontró el archivo dudoso en '{path_unknown}'. Asegúrate de haber subido un archivo .txt.")
+
 
 # --------------------------- FUNCIONES BÁSICAS ---------------------------
 

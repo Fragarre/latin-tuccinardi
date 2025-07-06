@@ -6,7 +6,7 @@ import zipfile
 from analisis_spi import ejecutar_analisis
 
 st.set_page_config(page_title="Análisis de Autoría SPI", layout="wide")
-st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 0.4")
+st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 0.5")
 
 # ------------------- SIDEBAR -------------------
 st.sidebar.header("Parámetros")
