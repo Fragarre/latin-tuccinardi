@@ -1,6 +1,7 @@
 # app.py
 import streamlit as st
 import os
+import io
 import shutil
 import zipfile
 from analisis_spi import ejecutar_analisis
@@ -31,6 +32,10 @@ txt_dudoso = st.sidebar.file_uploader("Texto dudoso (.txt)", type="txt")
 ejecutar = st.sidebar.button("Ejecutar análisis", disabled=not (zip_conocidos and txt_dudoso))
 
 if ejecutar:
+    # Limpiar directorios de ejecuciones anteriores
+    # for folder in [CONOCIDOS_DIR, DUDOSO_DIR, os.path.join(BASE_DIR, "resultados", "tablas")]:
+    #     shutil.rmtree(folder, ignore_errors=True)
+    #     os.makedirs(folder, exist_ok=True)
     with st.spinner("Procesando análisis..."):
 
         # Directorio base relativo al archivo actual (más seguro en cloud)
@@ -93,3 +98,18 @@ if ejecutar:
         st.pyplot(fig_bar)
 
         st.success("Análisis completado.")
+
+        # Ruta del CSV generado por el análisis
+        csv_path = os.path.join(BASE_DIR, "resultados", "tablas", f"resumen_similitudes_{metodo}.csv")
+
+        # Verificar que el archivo existe antes de ofrecer la descarga
+        if os.path.exists(csv_path):
+            with open(csv_path, "rb") as f:
+                st.download_button(
+                    label=f"📥 Descargar resumen de similitudes ({metodo})",
+                    data=f,
+                    file_name=f"resumen_similitudes_{metodo}.csv",
+                    mime="text/csv"
+                )
+        else:
+            st.warning("No se encontró el archivo de resumen de similitudes para descargar.")
