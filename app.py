@@ -6,7 +6,7 @@ import zipfile
 from analisis_spi import ejecutar_analisis
 
 st.set_page_config(page_title="Análisis de Autoría SPI", layout="wide")
-st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 0.5")
+st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 1.00")
 
 # ------------------- SIDEBAR -------------------
 st.sidebar.header("Parámetros")
@@ -70,8 +70,6 @@ if ejecutar:
                 st.error("⚠️ El archivo dudoso no se encuentra después de guardarlo.")
                 st.stop()
             
-            st.success("✅ Archivo dudoso guardado como 'dudoso.txt'")
-            st.write("📁 Contenido de 'data/texto_dudoso/':", os.listdir(DUDOSO_DIR))
         except Exception as e:
             st.error(f"❌ Error al guardar el archivo dudoso: {e}")
             st.stop()
