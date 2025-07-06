@@ -66,7 +66,7 @@ def calcular_similitud(vec1, vec2, metodo="cosine"):
 
 # --------------------------- FUNCIÓN PRINCIPAL ---------------------------
 
-def ejecutar_analisis(n=4, s=1000, metodo="cosine", margen=0.05):
+def ejecutar_analisis(n=4, s=1000, metodo="cosine", margen=0.10):
     os.makedirs(TABLAS_DIR, exist_ok=True)
 
     path_unknown = os.path.join(DATA_DIR, "texto_dudoso", "dudoso.txt")
