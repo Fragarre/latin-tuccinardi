@@ -7,7 +7,7 @@ import zipfile
 from analisis_spi import ejecutar_analisis
 
 st.set_page_config(page_title="Análisis de Autoría SPI", layout="wide")
-st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 1.02")
+st.subheader("Análisis de Autoría por N-gramas (SPI no Normalizado) V 1.03")
 
 # ------------------- SIDEBAR -------------------
 st.sidebar.header("Parámetros")
@@ -22,7 +22,7 @@ except ValueError:
     st.stop()
 
 metodo = st.sidebar.selectbox("Métrica de similitud", ["cosine", "euclidean"], index=0)
-margen = st.sidebar.slider("Margen de tolerancia (%)", min_value=1, max_value=20, value=5) / 100
+margen = st.sidebar.slider("Margen de tolerancia (%)", min_value=1, max_value=20, value=10) / 100
 
 # ------------------- CARGA DE ARCHIVOS -------------------
 st.sidebar.header("Carga de archivos")
