@@ -121,7 +121,7 @@ def ejecutar_analisis(n=4, s=1000, metodo="cosine", margen=0.10):
     dentro = sum((lim_inf <= val <= lim_sup) for val in valores_unknown)
     porcentaje = dentro / len(valores_unknown) if len(valores_unknown) > 0 else 0
 
-    if porcentaje >= 0.7:
+    if porcentaje >= 0.6:
         conclusion = "ALTA probabilidad de misma autoría."
     elif porcentaje >= 0.4:
         conclusion = "PROBABILIDAD MODERADA de misma autoría."
